@@ -15,6 +15,10 @@ public class InputScript : MonoBehaviour
         movementScript = GetComponent<MovementScript>();
     }
 
+    void MouseClick(){
+        weaponHandler.Fire();
+    }
+
     // Update is called once per frame
     void Update()
     {
@@ -26,6 +30,9 @@ public class InputScript : MonoBehaviour
 
         float AngleDeg = (180 / Mathf.PI) * AngleRad;
         weaponHandler.pointWeapon(Quaternion.Euler(0, 0, AngleDeg));
+        if (Input.GetMouseButtonDown(0)){
+            MouseClick();
+        }
     }
     void FixedUpdate(){
         movementScript.Move(walkDirection*Time.deltaTime);

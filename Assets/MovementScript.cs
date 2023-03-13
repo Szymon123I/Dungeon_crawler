@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class MovementScript : MonoBehaviour
 {
-    private float speed = 10;
+    [SerializeField] private float speed = 6;
     private Rigidbody2D rig;
 
     public void Move(Vector2 position){
