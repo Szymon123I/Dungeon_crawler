@@ -16,8 +16,10 @@ public class Unit : MonoBehaviour
 	private bool canMove = true;
 
 	public void setTarget(Transform _target){
-		target=_target;
-		StopCoroutine("FollowPath");
+		if (_target != target){
+			target=_target;
+			StopCoroutine("FollowPath");
+		}
 	} 
 
     void Start(){
@@ -26,7 +28,7 @@ public class Unit : MonoBehaviour
 
 	public void setCanMove(bool _canMove){
 		canMove = _canMove;
-		StopCoroutine("FollowPath");
+		// StopCoroutine("FollowPath");
 	}
 
     IEnumerator UpdatePath() {
@@ -35,7 +37,7 @@ public class Unit : MonoBehaviour
 			yield return new WaitForSeconds (.3f);
 		}
 		Vector3? targetPosOld = null;
-		if (canMove && target is not null){
+		if (target is not null){
 			PathRequestManager.RequestPath (transform.position, target.position, OnPathFound);
 			targetPosOld = target.position;
 		}
@@ -44,11 +46,12 @@ public class Unit : MonoBehaviour
 
 		while (true) {
 			yield return new WaitForSeconds (minPathUpdateTime);
-			if (!canMove || target is null) continue;
+			if (target == null) continue;
 			if (targetPosOld is null){
 				targetPosOld = target.position;
 			} 
 			if ((target.position - (Vector3) targetPosOld).sqrMagnitude > sqrMoveThreshold) {
+				if (!canMove) continue;
 				PathRequestManager.RequestPath (transform.position, target.position, OnPathFound);
 				targetPosOld = target.position;
 			}
@@ -80,6 +83,10 @@ public class Unit : MonoBehaviour
 		float speedPercent = 1;
 
 		while (followingPath) {
+			if (!canMove){
+				yield return null;
+				continue;
+			}
 			Vector2 pos2D = new Vector2 (transform.position.x, transform.position.y);
 			if (path.turnBoundaries.Length == 0){
                 followingPath = false;
