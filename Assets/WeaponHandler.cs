@@ -11,8 +11,9 @@ public class WeaponHandler : MonoBehaviour
         armTransform.rotation = rotation;
     }
 
-    public void Fire(){
-        heldWeapon.Fire();
+    public void Fire(bool held = false){
+        if ((!heldWeapon.IsAutomatic && !held) || (heldWeapon.IsAutomatic && held))
+            heldWeapon._fire();
     }
 
     void Start()

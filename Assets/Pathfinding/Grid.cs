@@ -108,7 +108,7 @@ public class Grid : MonoBehaviour
 
 	}
 
-    void CreateGrid(){
+    public void CreateGrid(){
         Vector2 worldBottomLeft = (Vector2) transform.position-Vector2.right*gridWorldSize.x/2 - Vector2.up*gridWorldSize.y/2;
         grid = new Node[gridSizeX,gridSizeY];
         

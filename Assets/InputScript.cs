@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class InputScript : MonoBehaviour
 {
+    private bool held;
     private Vector2 walkDirection = Vector2.zero;
     private MovementScript movementScript;
     private WeaponHandler weaponHandler;
@@ -32,8 +33,16 @@ public class InputScript : MonoBehaviour
         weaponHandler.pointWeapon(Quaternion.Euler(0, 0, AngleDeg));
         if (Input.GetMouseButtonDown(0)){
             MouseClick();
+            held = true;
+        }
+        if (Input.GetMouseButtonUp(0)){
+            held = false;
+        }
+        if (held){
+            weaponHandler.Fire(held);
         }
     }
+
     void FixedUpdate(){
         movementScript.Move(walkDirection*Time.deltaTime);
     }

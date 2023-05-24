@@ -58,7 +58,8 @@ public class Unit : MonoBehaviour
 		}
 	}
     public void OnPathFound(Vector2[] newPath, bool pathSuccesful){
-        if (pathSuccesful){
+		if (this == null) return;
+        if (gameObject != null && pathSuccesful){
             path = new Path(newPath, transform.position, turnDst, stoppingDst);
             StopCoroutine("FollowPath");
             StartCoroutine("FollowPath");
