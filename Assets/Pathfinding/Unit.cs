@@ -5,16 +5,17 @@ using UnityEngine;
 public class Unit : MonoBehaviour
 {
     private Transform target;
-    const float minPathUpdateTime = .2f;
-	const float pathUpdateMoveThreshold = .5f;
+    const float minPathUpdateTime = .01f;
+	const float pathUpdateMoveThreshold = 1f;
 
     Path path;
     public float speed = 1;
 	public float turnSpeed = 3;
 	public float turnDst = 5;
-	public float stoppingDst = 1;
+	private float stoppingDst = 0;
 	private bool canMove = true;
-
+	EnemyBase entity;
+	private MovementScript movementScript;
 	public void setTarget(Transform _target){
 		if (_target != target){
 			target=_target;
@@ -23,7 +24,9 @@ public class Unit : MonoBehaviour
 	} 
 
     void Start(){
-        StartCoroutine (UpdatePath ());
+        movementScript = GetComponent<MovementScript>();
+		StartCoroutine (UpdatePath ());
+		entity = GetComponent<EnemyBase>();
     }
 
 	public void setCanMove(bool _canMove){
@@ -70,15 +73,7 @@ public class Unit : MonoBehaviour
 
 		bool followingPath = true;
 		int pathIndex = 0;
-        if (path.lookPoints.Length != 0){
-            var pointPos = new Vector3(path.lookPoints [pathIndex].x,path.lookPoints [pathIndex].y,0);
 
-            float AngleRad = Mathf.Atan2(pointPos.y - this.transform.position.y, pointPos.x - this.transform.position.x);
-
-            float AngleDeg = (180 / Mathf.PI) * AngleRad;
-
-            transform.rotation = Quaternion.Euler(0, 0, AngleDeg);
-        }
         
 		int pathHash = path.GetHashCode();
 		float speedPercent = 1;
@@ -118,8 +113,13 @@ public class Unit : MonoBehaviour
                 var AngleDeg = (180 / Mathf.PI) * AngleRad;
 
 				Quaternion targetRotation = Quaternion.Euler(0, 0, AngleDeg);
-                transform.rotation = Quaternion.Lerp (transform.rotation, targetRotation, Time.deltaTime * turnSpeed);
-				transform.Translate (Vector3.right * Time.deltaTime * speed * speedPercent, Space.Self);
+				var position = (targetRotation * Vector2.right).normalized*Time.deltaTime*speed;
+				if (position.normalized.x < 0)
+					entity.WalkFlip(true);
+				else if (position.normalized.x > 0)
+					entity.WalkFlip(false);
+				transform.position = transform.position + position;
+				// transform.Translate (Vector3.right * Time.deltaTime * speed * speedPercent, Space.Self);
 			}
 
 			yield return null;
@@ -127,7 +127,7 @@ public class Unit : MonoBehaviour
             if (path.GetHashCode() != pathHash) {
 				followingPath = false;
 			}
-
+			entity.SetIsWalking(followingPath);
 		}
 	}
 

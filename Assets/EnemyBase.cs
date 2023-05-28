@@ -2,25 +2,37 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class EnemyBase : MonoBehaviour
+public class EnemyBase : Entity
 {
     [HideInInspector]
     public Unit enemyMovementScript;
     float distance = 999;
-    private IDamagable target;
-    private HealthScript healthScript;
+    protected IDamagable target;
+    protected HealthScript healthScript;
+    protected Animator animator;
+    private bool isWalking;
     void Start()
     {
         target = GameObject.Find("Player").GetComponent<IDamagable>();
         healthScript = GetComponent<HealthScript>();
         enemyMovementScript = GetComponent<Unit>();
         enemyMovementScript.setTarget(target.transform);
+        animator = GetComponent<Animator>();
+    }
+
+    public void SetIsWalking(bool _isWalking){
+        isWalking = _isWalking;
+    }
+
+    public override void WalkFlip(bool flip)
+    {
+        transform.localScale = new Vector2(flip? -1 : 1 ,1);
     }
 
     private float attackTimer = 0;
     private float stunTimer = 0;
     protected bool attackCheck(){
-        return distance<3;
+        return distance<1.5f;
     }
 
     protected void killCallback(){
@@ -29,9 +41,10 @@ public class EnemyBase : MonoBehaviour
 
     protected IEnumerator Attack(){
         if (attackTimer > 0) yield break;
+        animator.SetTrigger("attack");
         attackTimer = 0.5f;
-        stunTimer += 0.25f;
-        yield return new WaitForSeconds(0.25f);
+        stunTimer += 0.75f;
+        yield return new WaitForSeconds(0.35f);
         if (attackCheck()) {
             target.Damage(25,killCallback);
         }
@@ -49,6 +62,10 @@ public class EnemyBase : MonoBehaviour
     }
     
     void Update(){
+        animator.SetBool("walking",isWalking);
+        if (target != null){
+            distance = (target.transform.position-transform.position).sqrMagnitude;
+        }
         enemyMovementScript.setCanMove(stunTimer<=0);
         if (stunTimer>0){
             stunTimer-=Time.deltaTime;
@@ -60,7 +77,7 @@ public class EnemyBase : MonoBehaviour
             return;
         }
         enemyMovementScript.setTarget(target.transform);
-        distance = (target.transform.position-transform.position).sqrMagnitude;
+        
         distanceEnter();
     }
 

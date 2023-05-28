@@ -6,9 +6,17 @@ public class WeaponHandler : MonoBehaviour
 {
     
     private Transform armTransform;
+    
     private Weapon heldWeapon;
-    public void pointWeapon(Quaternion rotation){
+    public void pointWeapon(Quaternion rotation, Vector3 mouse){
         armTransform.rotation = rotation;
+        if (mouse.x < transform.position.x){
+        
+            heldWeapon.GetComponentInChildren<SpriteRenderer>().transform.parent.localScale = new Vector3(1,-1,1);
+        }else{
+            heldWeapon.GetComponentInChildren<SpriteRenderer>().transform.parent.localScale = new Vector3(1,1,1);
+        }
+
     }
 
     public void Fire(bool held = false){

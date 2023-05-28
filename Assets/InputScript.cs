@@ -8,6 +8,7 @@ public class InputScript : MonoBehaviour
     private Vector2 walkDirection = Vector2.zero;
     private MovementScript movementScript;
     private WeaponHandler weaponHandler;
+     public bool isWalking {get; private set;}
 
     private Vector2 mouseWorldPos;
     void Start()
@@ -30,7 +31,7 @@ public class InputScript : MonoBehaviour
         float AngleRad = Mathf.Atan2(mouseWorldPos.y - this.transform.position.y, mouseWorldPos.x - this.transform.position.x);
 
         float AngleDeg = (180 / Mathf.PI) * AngleRad;
-        weaponHandler.pointWeapon(Quaternion.Euler(0, 0, AngleDeg));
+        weaponHandler.pointWeapon(Quaternion.Euler(0, 0, AngleDeg), mouseWorldPos);
         if (Input.GetMouseButtonDown(0)){
             MouseClick();
             held = true;
@@ -44,6 +45,7 @@ public class InputScript : MonoBehaviour
     }
 
     void FixedUpdate(){
+        isWalking = walkDirection.magnitude > 0? true : false;
         movementScript.Move(walkDirection*Time.deltaTime);
     }
 }

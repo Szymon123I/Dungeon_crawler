@@ -5,19 +5,20 @@ using System;
 
 public class HealthScript : MonoBehaviour, IDamagable
 {
-    [SerializeField]
-    float maxHealth = 100;
-    float health;
+    public float maxHealth = 100;
+    public float health;
 
     public Action onHit;
 
     public void Damage(float dmgAmount, Action killCallback)
     {
+        if (health<=0) return;
         health-=dmgAmount;
+        if (onHit != null) onHit();
         if (health<=0){
             Kill();
-            if (killCallback is not null) killCallback();
-            if (onHit is not null) onHit();
+            if (killCallback != null) killCallback();
+            
         }
     }
 
