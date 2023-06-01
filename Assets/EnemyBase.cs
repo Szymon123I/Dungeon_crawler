@@ -6,7 +6,7 @@ public class EnemyBase : Entity
 {
     [HideInInspector]
     public Unit enemyMovementScript;
-    float distance = 999;
+    protected float distance = 999;
     protected IDamagable target;
     protected HealthScript healthScript;
     protected Animator animator;
@@ -29,17 +29,17 @@ public class EnemyBase : Entity
         transform.localScale = new Vector2(flip? -1 : 1 ,1);
     }
 
-    private float attackTimer = 0;
-    private float stunTimer = 0;
-    protected bool attackCheck(){
+    protected float attackTimer = 0;
+    protected float stunTimer = 0;
+    virtual protected bool attackCheck(){
         return distance<1.5f;
     }
 
-    protected void killCallback(){
+    virtual protected void killCallback(){
         target = null;
     }
 
-    protected IEnumerator Attack(){
+    virtual protected IEnumerator Attack(){
         if (attackTimer > 0) yield break;
         animator.SetTrigger("attack");
         attackTimer = 0.5f;
@@ -54,7 +54,7 @@ public class EnemyBase : Entity
     public void stun(float _time){
         stunTimer+=_time;
     }
-    protected void distanceEnter(){
+    virtual protected void distanceEnter(){
         if (attackCheck()){
             StartCoroutine(Attack());
         }

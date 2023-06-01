@@ -70,7 +70,7 @@ public class FloorManager : MonoBehaviour
         var currentId = currentRoom.id;
         var lewoprawo = side % 2 != 0? side-2 : 0;
         var goradol = side % 2 == 0 ? side-1 : 0;
-        PlayerEntity.Instance.transform.position = Vector2.zero + new Vector2(lewoprawo*-7f,goradol*2.5f);
+        PlayerEntity.Instance.transform.position = Vector2.zero + new Vector2(lewoprawo*-6f,goradol*2.5f);
         (int y, int x) t = (currentId.y+goradol,currentId.x+lewoprawo);
         enterRoom(t);
     }

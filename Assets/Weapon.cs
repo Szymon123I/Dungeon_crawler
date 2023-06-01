@@ -36,7 +36,7 @@ public class Weapon : MonoBehaviour
     public virtual void Fire(){
         
         var newBullet = Instantiate<BulletScript>(bullet);
-        newBullet.Fire(onBulletHit,25,shootPoint.position,shootPoint.rotation * Quaternion.Euler(0,0,Random.Range(-10,10)));
+        newBullet.Fire(onBulletHit,25,shootPoint.position,shootPoint.rotation * Quaternion.Euler(0,0,Random.Range(-10,10)),LayerMask.GetMask("Player"));
         Destroy(newBullet.gameObject,2);
         CinemachineShake.Instance.ShakeCamera(1,0.1f);
 

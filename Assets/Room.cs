@@ -43,7 +43,7 @@ public class Room
                 doorOffset = goradol == -1? 1f : 0;
                 door = MonoBehaviour.Instantiate<DoorScript>(floorManager.TDdoorPrefab);
             }
-            door.transform.position = Vector2.zero + new Vector2(lewoprawo*9.5f,goradol*-4f+doorOffset);
+            door.transform.position = Vector2.zero + new Vector2(lewoprawo*8.5f,goradol*-4f+doorOffset);
             door.transform.SetParent(currentRoomObject.transform);
             door.doorSide = side;
         }
